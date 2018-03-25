@@ -4,7 +4,18 @@ from os import listdir
 import random
 
 def main():
-    print(_transition_matrix())
+    """ Generate a fake news headline using a naïve 1st order markov chain """
+    transition = _transition_matrix()
+
+    # pick the first word at random
+    headline = list()
+    headline.append(random.choice(list(transition.keys())))
+
+    # add words until the end-of-line nominator is found, i.e. `None`
+    while headline[-1] != None:
+        headline.append(_pick_successor(headline[-1], transition))
+
+    print(' '.join(headline[:-1]))
 
 def _pick_successor(word, transition):
     """ Pick a successor based on the probability of transition """

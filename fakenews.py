@@ -1,9 +1,24 @@
 from collections import defaultdict
 from os.path import isfile, join
 from os import listdir
+import random
 
 def main():
     print(_transition_matrix())
+
+def _pick_successor(word, transition):
+    """ Pick a successor based on the probability of transition """
+    transition_probability = random.random()
+    total_probability = 0.0
+
+    # loop until the probability exceeds the likelihood of transition
+    for successor, probability in transition[word]:
+        total_probability += probability
+        if total_probability >= transition_probability:
+            return successor
+
+    # perhaps a little flaky, but should always have returned by now
+    raise RuntimeError('_pick_successor failed')
 
 def _transition_matrix():
     """ Return a unidirectional transition matrix of pairwise word order

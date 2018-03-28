@@ -11,7 +11,7 @@ class frequency(object):
 
     def __init__(self):
         """ Initialize an empty frequency matrix """
-        self.frequency = defaultdict(lambda: defaultdict(int))
+        self.matrix = defaultdict(lambda: defaultdict(int))
 
     def add_text(self, text):
         """ Add each pair of words in the passed text to the matrix """
@@ -27,7 +27,7 @@ class frequency(object):
             Since the frequency is unidirectional, the first argument is not
             added as the successor of the second.
         """
-        self.frequency[word][succesor] += 1
+        self.matrix[word][succesor] += 1
 
 class transition(object):
     """ Word sequence transition matrix
@@ -37,14 +37,14 @@ class transition(object):
         sorted in ascending order. `None` is used as an end-of-line delimiter.
     """
     def __init__(self, frequencies):
-        self.transition = defaultdict(list)
-        for (word, nextlist) in frequencies.frequency.items():
+        self.matrix = defaultdict(list)
+        for (word, nextlist) in frequencies.matrix.items():
             frequency_sum = sum((freq for _, freq in nextlist.items()))
 
             for (next_word, frequency) in nextlist.items():
                 # matrix entries consist of a word and the probability of transition
-                probability = float(frequency) / float(total_freq)
-                transition[word].append((next_word, probability))
+                probability = float(frequency) / float(frequency_sum)
+                self.matrix[word].append((next_word, probability))
 
             # sort the next-word list by probability for simpler use later
-            transition[word].sort(key=lambda entry: entry[1])
+            self.matrix[word].sort(key=lambda entry: entry[1])

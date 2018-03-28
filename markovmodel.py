@@ -61,8 +61,9 @@ def _frequency_matrix():
         with open(f) as fstream:
             for line in fstream:
                 words = line.split()
-                for a, b in zip(words, words[1:]+[None]):
-                    frequency[a][b] += 1
+                words_pairwise = zip(words, words[1:]+[None])
+                for position, (word1, word2) in enumerate(words_pairwise):
+                    frequency[word1][word2] += 1
     return frequency
 
 def _data_files(datapath='data/', exclude=['.gitignore']):

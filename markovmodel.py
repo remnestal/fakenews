@@ -2,12 +2,13 @@ from collections import defaultdict
 from os.path import isfile, join
 from os import listdir
 import random
+import matrix
 
 class Markovchain(object):
     """ Markov-chain object for fabricating text """
 
-    def main(self):
-        """ Generate a fake text string using a naïve 1st order markov chain """
+    def generate(self):
+        """ Return a fabricated string made with a 1st order markov chain """
         transition = self._transition_matrix()
 
         # pick the first word at random
@@ -18,7 +19,7 @@ class Markovchain(object):
         while body[-1] != None:
             body.append(self._pick_successor(body[-1], transition))
 
-        print(' '.join(body[:-1]))
+        return ' '.join(body[:-1])
 
     def _pick_successor(self, word, transition):
         """ Pick a successor based on the probability of transition """

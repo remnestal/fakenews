@@ -1,9 +1,12 @@
 from collections import defaultdict
 
 class frequency(object):
-    """ Unidirectional matrix of ascending pairwise word frequency
-        * uses all datasets found in data/
-        * the `None` word denotes end-of-line
+    """ Word sequence frequency matrix
+
+        Word frequency is calculated pairwise in ascending order, i.e. word
+        number n+1 is added to the successor-frequency vector of the nth word.
+        The frequency is stored as the number of occurances of that exact word
+        sequence. `None` is used as an end-of-line delimiter.
     """
 
     def __init__(self):

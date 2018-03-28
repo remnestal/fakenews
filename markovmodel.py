@@ -3,77 +3,77 @@ from os.path import isfile, join
 from os import listdir
 import random
 
-def main():
-    """ Generate a fake news headline using a naïve 1st order markov chain """
-    transition = _transition_matrix()
+class Markovchain(object):
+    """ Markov-chain object for fabricating text """
 
-    # pick the first word at random
-    headline = list()
-    headline.append(random.choice(list(transition.keys())))
+    def main(self):
+        """ Generate a fake text string using a naïve 1st order markov chain """
+        transition = self._transition_matrix()
 
-    # add words until the end-of-line nominator is found, i.e. `None`
-    while headline[-1] != None:
-        headline.append(_pick_successor(headline[-1], transition))
+        # pick the first word at random
+        body = list()
+        body.append(random.choice(list(transition.keys())))
 
-    print(' '.join(headline[:-1]))
+        # add words until the end-of-line nominator is found, i.e. `None`
+        while body[-1] != None:
+            body.append(self._pick_successor(body[-1], transition))
 
-def _pick_successor(word, transition):
-    """ Pick a successor based on the probability of transition """
-    transition_probability = random.random()
-    total_probability = 0.0
+        print(' '.join(body[:-1]))
 
-    # loop until the probability exceeds the likelihood of transition
-    for successor, probability in transition[word]:
-        total_probability += probability
-        if total_probability >= transition_probability:
-            return successor
+    def _pick_successor(self, word, transition):
+        """ Pick a successor based on the probability of transition """
+        transition_probability = random.random()
+        total_probability = 0.0
 
-    # perhaps a little flaky, but should always have returned by now
-    raise RuntimeError('_pick_successor failed')
+        # loop until the probability exceeds the likelihood of transition
+        for successor, probability in transition[word]:
+            total_probability += probability
+            if total_probability >= transition_probability:
+                return successor
 
-def _transition_matrix():
-    """ Return a unidirectional transition matrix of pairwise word order
-        * frequency is relative to all successors of a given word
-        * matrix elements are represented by tuples of (word, probability)
-    """
-    # the transition matrix is implemented as a dictionary of tuple-entry lists
-    transition = defaultdict(list)
-    for word, successors in _frequency_matrix().items():
-        total_freq = sum(map(lambda d: d[1], successors.items()))
+        # perhaps a little flaky, but should always have returned by now
+        raise RuntimeError('_pick_successor failed')
 
-        for successor, frequency in successors.items():
-            # matrix entries consist of a word and the probability of transition
-            probability = float(frequency) / float(total_freq)
-            transition[word].append((successor, probability))
+    def _transition_matrix(self):
+        """ Return a unidirectional transition matrix of pairwise word order
+            * frequency is relative to all successors of a given word
+            * matrix elements are represented by tuples of (word, probability)
+        """
+        # the transition matrix is implemented as a dictionary of tuple-entry lists
+        transition = defaultdict(list)
+        for word, successors in self._frequency_matrix().items():
+            total_freq = sum(map(lambda d: d[1], successors.items()))
 
-        # sort the successor list by probability for simpler use later
-        transition[word].sort(key=lambda entry: entry[1])
-    return transition
+            for successor, frequency in successors.items():
+                # matrix entries consist of a word and the probability of transition
+                probability = float(frequency) / float(total_freq)
+                transition[word].append((successor, probability))
 
-def _frequency_matrix():
-    """ Return a unidirectional frequency matrix of pairwise word order
-        * uses all datasets found in data/
-        * the `None` word denotes end-of-line
-    """
-    # the frequency matrix is implemented as a dictionary of dictionaries
-    frequency = defaultdict(lambda: defaultdict(int))
-    for f in _data_files():
-        with open(f) as fstream:
-            for line in fstream:
-                words = line.split()
-                words_pairwise = zip(words, words[1:]+[None])
-                for position, (word1, word2) in enumerate(words_pairwise):
-                    frequency[word1][word2] += 1
-    return frequency
+            # sort the successor list by probability for simpler use later
+            transition[word].sort(key=lambda entry: entry[1])
+        return transition
 
-def _data_files(datapath='data/', exclude=['.gitignore']):
-    """ Return paths of eligible files in the data subdirectory """
-    files = list()
-    for f in listdir(datapath):
-        fpath = join(datapath, f)
-        if isfile(fpath) and f not in exclude:
-            files.append(fpath)
-    return files
+    def _frequency_matrix(self):
+        """ Return a unidirectional frequency matrix of pairwise word order
+            * uses all datasets found in data/
+            * the `None` word denotes end-of-line
+        """
+        # the frequency matrix is implemented as a dictionary of dictionaries
+        frequency = defaultdict(lambda: defaultdict(int))
+        for f in self._data_files():
+            with open(f) as fstream:
+                for line in fstream:
+                    words = line.split()
+                    words_pairwise = zip(words, words[1:]+[None])
+                    for position, (word1, word2) in enumerate(words_pairwise):
+                        frequency[word1][word2] += 1
+        return frequency
 
-if __name__ == "__main__":
-    main()
+    def _data_files(self, datapath='data/', exclude=['.gitignore']):
+        """ Return paths of eligible files in the data subdirectory """
+        files = list()
+        for f in listdir(datapath):
+            fpath = join(datapath, f)
+            if isfile(fpath) and f not in exclude:
+                files.append(fpath)
+        return files

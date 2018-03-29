@@ -1,5 +1,28 @@
 from collections import defaultdict
 
+class _defaultlist(object):
+    """ List structure with default initializer
+
+        Implementation is based on that of `collections.defaultdict`. If a non-
+        existing list member is set, i.e. list[key] and key is larger than
+        len(list); then the list initializes default members up unto that key.
+    """
+
+    def __init__(self, default):
+        """ Initialize an empty list """
+        self.default = default
+        self.list = list()
+
+    def __getitem__(self, key):
+        """ Return the member with the passed index """
+        return self.list[key]
+
+    def __setitem__(self, key, value):
+        """ Set the value of a certain list member """
+        diff = max((key - (len(self.list) - 1)), 0)
+        if diff > 0: self.list += [self.default()] * diff
+        self.list[key] = value
+
 class frequency(object):
     """ Word sequence frequency matrix
 

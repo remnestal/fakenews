@@ -13,6 +13,10 @@ class _defaultlist(object):
         self.default = default
         self.list = list()
 
+    def __iter__(self):
+        """ Return a iterable of the list """
+        return self.list.__iter__()
+
     def __getitem__(self, key):
         """ Return the member with the passed index """
         diff = max((key - (len(self.list) - 1)), 0)

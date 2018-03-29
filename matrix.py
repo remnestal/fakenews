@@ -17,17 +17,17 @@ class frequency(object):
         """ Add each pair of words in the passed text to the matrix """
         words = text.split()
         words_pairwise = zip(words, words[1:]+[None])
-        for pair in enumerate(words_pairwise):
+        for pair in words_pairwise:
             self.add_pair(*pair)
 
-    def add_pair(self, word, succesor):
+    def add_pair(self, word, successor):
         """ Add the passed pair of words to the matrix
 
             The second argument is added as the successor of the first word.
             Since the frequency is unidirectional, the first argument is not
             added as the successor of the second.
         """
-        self.matrix[word][succesor] += 1
+        self.matrix[word][successor] += 1
 
 class transition(object):
     """ Word sequence transition matrix
@@ -40,7 +40,6 @@ class transition(object):
         self.matrix = defaultdict(list)
         for (word, nextlist) in frequencies.matrix.items():
             frequency_sum = sum((freq for _, freq in nextlist.items()))
-
             for (next_word, frequency) in nextlist.items():
                 # matrix entries consist of a word and the probability of transition
                 probability = float(frequency) / float(frequency_sum)

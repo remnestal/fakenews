@@ -15,12 +15,12 @@ class _defaultlist(object):
 
     def __getitem__(self, key):
         """ Return the member with the passed index """
+        diff = max((key - (len(self.list) - 1)), 0)
+        if diff > 0: self.list += [self.default()] * diff
         return self.list[key]
 
     def __setitem__(self, key, value):
         """ Set the value of a certain list member """
-        diff = max((key - (len(self.list) - 1)), 0)
-        if diff > 0: self.list += [self.default()] * diff
         self.list[key] = value
 
 class frequency(object):

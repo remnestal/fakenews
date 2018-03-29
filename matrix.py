@@ -63,14 +63,21 @@ class transition(object):
         there is a list of the tuple (next-word, probability) and the words are
         sorted in ascending order. `None` is used as an end-of-line delimiter.
     """
-    def __init__(self, frequencies):
-        self.matrix = defaultdict(list)
-        for (word, nextlist) in frequencies.matrix.items():
-            frequency_sum = sum((freq for _, freq in nextlist.items()))
-            for (next_word, frequency) in nextlist.items():
-                # matrix entries consist of a word and the probability of transition
-                probability = float(frequency) / float(frequency_sum)
-                self.matrix[word].append((next_word, probability))
+    def __init__(self, frequency_matrix):
+        self.matrix = _defaultlist(lambda: defaultdict(list))
 
-            # sort the next-word list by probability for simpler use later
-            self.matrix[word].sort(key=lambda entry: entry[1])
+        # for each position
+        for position, freq_list in enumerate(frequency_matrix.matrix):
+
+            # for each word in the frequency matrix
+            for (word, nextlist) in freq_list.items():
+                frequency_sum = sum((freq for _, freq in nextlist.items()))
+
+                # for each possible next word
+                for (next_word, frequency) in nextlist.items():
+                    # matrix entries consist of a word and the probability of transition
+                    probability = float(frequency) / float(frequency_sum)
+                    self.matrix[position][word].append((next_word, probability))
+
+                # sort the next-word list by probability for simpler use later
+                self.matrix[position][word].sort(key=lambda entry: entry[1])

@@ -19,27 +19,28 @@ class Markovchain(object):
 
         # set up the transition matrix
         self.transition = matrix.transition(frequency)
+        print(self.transition)
 
     def generate(self):
         """ Return a fabricated string made with a 1st order markov chain """
 
         # pick the first word at random
         body = list()
-        body.append(random.choice(list(self.transition.matrix.keys())))
+        body.append(random.choice(list(self.transition.matrix[0].keys())))
 
         # add words until the end-of-line nominator is found, i.e. `None`
         while body[-1] != None:
-            body.append(self.__next(body[-1]))
+            body.append(self.__next(len(body)-1, body[-1]))
 
         return ' '.join(body[:-1])
 
-    def __next(self, word):
+    def __next(self, position, word):
         """ Pick a successor based on the probability of transition """
         transition_probability = random.random()
         total_probability = 0.0
 
         # loop until the probability exceeds the likelihood of transition
-        for successor, probability in self.transition.matrix[word]:
+        for successor, probability in self.transition.matrix[position][word]:
             total_probability += probability
             if total_probability >= transition_probability:
                 return successor

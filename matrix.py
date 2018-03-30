@@ -42,7 +42,7 @@ class frequency(object):
 
     def add_text(self, text):
         """ Add each pair of words in the passed text to the matrix """
-        words = text.split()
+        words = text.replace('"', '').replace('”', '').split() # todo: better quote policy
         words_pairwise = zip(words, words[1:]+[None])
         for position, pair in enumerate(words_pairwise):
             self.add_pair(position, *pair)

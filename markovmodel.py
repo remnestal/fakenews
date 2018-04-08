@@ -24,13 +24,12 @@ class Markovchain(object):
     def generate(self):
         """ Return a fabricated string made with a 1st order markov chain """
 
-        # pick the first word at random
         body = list()
-        body.append(random.choice(list(self.transition.matrix[0].keys())))
+        body.append(self.__next(0, None)) # first word
 
         # add words until the end-of-line nominator is found, i.e. `None`
         while body[-1] != None:
-            body.append(self.__next(len(body)-1, body[-1]))
+            body.append(self.__next(len(body), body[-1]))
 
         return ' '.join(body[:-1])
 

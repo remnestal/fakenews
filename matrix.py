@@ -1,4 +1,10 @@
 from collections import defaultdict
+from enum import Enum
+
+class delimiter(Enum):
+    """ Abstraction of string delimiter literals """
+    ROOT = 0
+    EOL = 1
 
 class _defaultlist(object):
     """ List structure with default initializer
@@ -43,7 +49,7 @@ class frequency(object):
     def add_text(self, text):
         """ Add each pair of words in the passed text to the matrix """
         words = text.replace('"', '').replace('”', '').split() # todo: better quote policy
-        words_pairwise = zip([None] + words, words + [None])
+        words_pairwise = zip([delimiter.ROOT] + words, words + [delimiter.EOL])
         for position, pair in enumerate(words_pairwise):
             self.add_pair(position, *pair)
 

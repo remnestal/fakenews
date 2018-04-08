@@ -19,7 +19,6 @@ class Markovchain(object):
 
         # set up the transition matrix
         self.transition = matrix.transition(frequency)
-        print(self.transition)
 
     def generate(self):
         """ Return a fabricated string made with a 1st order markov chain """

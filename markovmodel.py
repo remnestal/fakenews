@@ -26,7 +26,7 @@ class Markovchain(object):
         body = list()
         body.append(self.__next(0, matrix.delimiter.ROOT)) # pick first word
 
-        # add words until the end-of-line nominator is found, i.e. `None`
+        # add words until the end-of-line nominator is found
         while body[-1] != matrix.delimiter.EOL:
             body.append(self.__next(len(body), body[-1]))
 

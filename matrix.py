@@ -39,7 +39,7 @@ class frequency(object):
         Word frequency is calculated pairwise in ascending order, i.e. word
         number n+1 is added to the successor-frequency vector of the nth word.
         The frequency is stored as the number of occurances of that exact word
-        sequence. `None` is used as an end-of-line delimiter.
+        sequence. `delimiter.EOL` is used as an end-of-line delimiter.
     """
 
     def __init__(self):
@@ -67,7 +67,8 @@ class transition(object):
 
         Matrix containing the transition probability of each word. For each word
         there is a list of the tuple (next-word, probability) and the words are
-        sorted in ascending order. `None` is used as an end-of-line delimiter.
+        sorted in ascending order. `delimiter.EOL` is used as an end-of-line
+        delimiter.
     """
     def __init__(self, frequency_matrix):
         self.matrix = _defaultlist(lambda: defaultdict(list))

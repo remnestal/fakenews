@@ -22,18 +22,15 @@ class Markovchain(object):
 
     def generate(self):
         """ Return a fabricated string made with a 1st order markov chain """
-
-        body = list()
-        body.append(self.__next(0, matrix.delimiter.ROOT)) # pick first word
-
-        # add words until the end-of-line nominator is found
+        body = [matrix.delimiter.ROOT]
         while body[-1] != matrix.delimiter.EOL:
-            body.append(self.__next(len(body), body[-1]))
+            body.append(self.__next(len(body)-1, body[-1]))
 
-        return ' '.join(body[:-1])
+        # return all but root and eol delimiters
+        return ' '.join(body[1:-1])
 
     def __next(self, position, word):
-        """ Pick a successor based on the probability of transition """
+        """ Pick a random successor based on the probability of transition """
         transition_probability = random.random()
         total_probability = 0.0
 

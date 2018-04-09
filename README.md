@@ -17,7 +17,7 @@ Right now there is **no good** character filtering policy, so most _unicode char
 ## How-to
 The program is run with python. By default, the generator outputs 10 headlines but you can also specify a single argument with the amount of headlines you desire.
 ```sh
-$   python3 fakenews.py         # generate some fake headlines
-$   python3 fakenews.py 50      # generates 50 fake headlines
+$   python3 fakenews.py                 # generate some fake headlines
+$   python3 fakenews.py --samples 50    # generates 50 fake headlines
 ```
 Currently there is no caching of the matrices used by the generator, so for large datasets _(about 500k lines+)_ the generator may take some time completing.

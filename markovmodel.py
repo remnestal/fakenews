@@ -3,6 +3,9 @@ from os.path import isfile, join
 from os import listdir
 import random
 import matrix
+import pickle
+
+CACHE = '.cache.pkl'
 
 class Markovchain(object):
     """ Markov-chain object for fabricating text """
@@ -42,6 +45,16 @@ class Markovchain(object):
 
         # perhaps a little flaky, but should always have returned by now
         raise RuntimeError('__next failed')
+
+    def __write_cache(self, cache_path=CACHE):
+        """ Write to the cache """
+        with open(cache_path, "wb") as cache:
+            pickle.dump(self.transition.matrix, cache, pickle.HIGHEST_PROTOCOL)
+
+    def __read_cache(self, cache_path=CACHE):
+        """ Read from the cache """
+        with open(cache_path, "rb") as cache:
+            return pickle.load(cache)
 
     def _data_files(self, datapath='data/', exclude=['.gitignore']):
         """ Return paths of eligible files in the data subdirectory """

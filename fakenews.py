@@ -13,10 +13,11 @@ def main():
 def __parse_arguments():
     """ Parse and return input arguments """
     parser = argparse.ArgumentParser()
-    parser.add_argument('-n', '--samples',  help='number of generated samples',
-                                            action='store',
-                                            type=int,
-                                            default=10)
+    parser.add_argument('-n', '--samples',
+                        help='number of generated samples',
+                        action='store',
+                        type=int,
+                        default=10)
     return parser.parse_args()
 
 if __name__ == "__main__":

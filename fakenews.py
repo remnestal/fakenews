@@ -18,6 +18,10 @@ def __parse_arguments():
                         action='store',
                         type=int,
                         default=10)
+    parser.add_argument('-c', '--no-cache',
+                        help='avoid using previously cached information',
+                        action='store_true',
+                        default=False)
     return parser.parse_args()
 
 if __name__ == "__main__":

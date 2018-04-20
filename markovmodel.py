@@ -10,9 +10,20 @@ CACHE = '.cache.pkl'
 class Markovchain(object):
     """ Markov-chain object for fabricating text """
 
-    def __init__(self):
+    def __init__(self, refresh_cache=False):
         """ Create the first order markov-chain """
+        
+        cache_enabled = not refresh_cache and isfile(CACHE)
+        if cache_enabled:
+            # utilize cached transition matrix
+            self.transition = matrix.transition(frequency_matrix=None,
+                                                cache=self.__read_cache())
+        else:
+            # generate the transition matrix anew
+            self.__initalize_model();
+            self.__write_cache()
 
+    def __initalize_model(self):
         # set up the frequency matrix
         frequency = matrix.frequency()
         for f in self._data_files():
@@ -21,7 +32,7 @@ class Markovchain(object):
                     frequency.add_text(line)
 
         # set up the transition matrix
-        self.transition = matrix.transition(frequency)
+        self.transition = matrix.transition(frequency_matrix=frequency)
 
     def generate(self):
         """ Return a fabricated string made with a 1st order markov chain """

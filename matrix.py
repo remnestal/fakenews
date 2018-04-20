@@ -70,21 +70,27 @@ class transition(object):
         sorted in ascending order. `delimiter.EOL` is used as an end-of-line
         delimiter.
     """
-    def __init__(self, frequency_matrix):
-        self.matrix = _defaultlist(lambda: defaultdict(list))
+    def __init__(self, frequency_matrix, cache=None):
+        if cache:
+            self.matrix = cache
 
-        # for each position
-        for position, freq_list in enumerate(frequency_matrix.matrix):
+        else:
+            matrix = _defaultlist(lambda: defaultdict(list))
+            # for each position
+            for position, freq_list in enumerate(frequency_matrix.matrix):
 
-            # for each word in the frequency matrix
-            for (word, nextlist) in freq_list.items():
-                frequency_sum = sum((freq for _, freq in nextlist.items()))
+                # for each word in the frequency matrix
+                for (word, nextlist) in freq_list.items():
+                    frequency_sum = sum((freq for _, freq in nextlist.items()))
 
-                # for each possible next word
-                for (next_word, frequency) in nextlist.items():
-                    # matrix entries consist of a word and the probability of transition
-                    probability = float(frequency) / float(frequency_sum)
-                    self.matrix[position][word].append((next_word, probability))
+                    # for each possible next word
+                    for (next_word, frequency) in nextlist.items():
+                        # matrix entries consist of a word and the probability of transition
+                        probability = float(frequency) / float(frequency_sum)
+                        matrix[position][word].append((next_word, probability))
 
-                # sort the next-word list by probability for simpler use later
-                self.matrix[position][word].sort(key=lambda entry: entry[1])
+                    # sort the next-word list by probability for simpler use later
+                    matrix[position][word].sort(key=lambda entry: entry[1])
+
+            # represent the matrix member as a regular list structure
+            self.matrix = list(matrix)

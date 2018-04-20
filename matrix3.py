@@ -1,4 +1,5 @@
-from collections import defaultdict
+from collections import defaultdict, Iterable
+from textutils import delimiter
 
 class _3d_matrix(object):
     """ Basic implementation for a 3-dimensional lazily evaluated matrix
@@ -28,8 +29,28 @@ class _3d_matrix(object):
         self.__matrix[key] = value
 
 class frequency(_3d_matrix):
-    """ Frequency matrix for expressing frequency of pairwise word sequences """
+    """ Frequency matrix for expressing frequency of pairwise word sequences
+
+        A[x]        all words at position x in the sequence
+        A[x][y]     all words following word y, at position x+1
+        A[x][y][z]  how many times the sequence {x, z} has occured at {x, x+1}
+    """
 
     def __init__(self):
         """ Initialize an empty frequency matrix """
         super(frequency, self).__init__(int)
+
+    def add_sequence(self, sequence):
+        """ Register the passed sequence of words in the matrix """
+
+        if not isinstance(sequence, Iterable):
+            raise ValueError('The passed sequence must be iterable.')
+
+        # add start/end- of text delimiters and group all tokens pairwise
+        sequence.insert(0, delimiter.ROOT)
+        sequence.append(delimiter.EOL)
+        pairwise = zip(sequence[:-1], sequence[1:])
+
+        # record that the sequence {word1, word2} occured at position
+        for position, (word1, word2) in enumerate(pairwise):
+            self[position][word1][word2] += 1

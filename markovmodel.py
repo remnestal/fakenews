@@ -13,7 +13,7 @@ class Markovchain(object):
     def __init__(self, ignore_cache=False):
         """ Create the first order markov-chain """
 
-        if not ignore_cache:
+        if not ignore_cache and isfile(CACHE):
             # utilize cached transition matrix
             self.transition = matrix.transition(frequency_matrix=None,
                                                 cache=self.__read_cache())

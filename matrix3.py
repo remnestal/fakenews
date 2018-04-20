@@ -26,3 +26,10 @@ class _3d_matrix(object):
     def __setitem__(self, key, value):
         """ Set the value of a certain dictionary member """
         self.__matrix[key] = value
+
+class frequency(_3d_matrix):
+    """ Frequency matrix for expressing frequency of pairwise word sequences """
+
+    def __init__(self):
+        """ Initialize an empty frequency matrix """
+        super(frequency, self).__init__(int)

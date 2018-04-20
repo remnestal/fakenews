@@ -21,11 +21,11 @@ class _3d_matrix(object):
              raise ValueError('`matrix_type` must be an instance of class `type`')
 
     def __getitem__(self, key):
-        """ Return the member with the passed index """
+        """ Return the row that corresponds to the passed index """
         return self.__matrix[key]
 
     def __setitem__(self, key, value):
-        """ Set the value of a certain dictionary member """
+        """ Set the row content corresponding to the passed row index """
         self.__matrix[key] = value
 
 class frequency(_3d_matrix):

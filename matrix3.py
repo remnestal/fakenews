@@ -13,11 +13,11 @@ class _3d_matrix(object):
     def __init__(self, matrix_type):
         """ Initialize an empty matrix """
         # assert that the passed type is actually derived from the type-class
-        if type(matrix_type) is not type:
-             raise ValueError('`matrix_type` must be derived of class `type`')
-        else:
+        if isinstance(matrix_type, type):
             # This is necessary evil to achieve lazy evaluation
             self.__matrix = defaultdict(lambda: defaultdict(lambda: defaultdict(matrix_type)))
+        else:
+             raise ValueError('`matrix_type` must be an instance of class `type`')
 
     def __getitem__(self, key):
         """ Return the member with the passed index """

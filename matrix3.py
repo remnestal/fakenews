@@ -18,3 +18,11 @@ class _3d_matrix(object):
         else:
             # This is necessary evil to achieve lazy evaluation
             self.__matrix = defaultdict(lambda: defaultdict(lambda: defaultdict(matrix_type)))
+
+    def __getitem__(self, key):
+        """ Return the member with the passed index """
+        return self.__matrix[key]
+
+    def __setitem__(self, key, value):
+        """ Set the value of a certain dictionary member """
+        self.__matrix[key] = value

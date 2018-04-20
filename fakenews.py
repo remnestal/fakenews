@@ -5,7 +5,7 @@ import argparse
 def main():
     """ Generate fake headlines """
     args = __parse_arguments()
-    chain = markovmodel.Markovchain()
+    chain = markovmodel.Markovchain(ignore_cache=args.ignore_cache)
 
     for _ in range(args.samples):
         print(chain.generate())
@@ -18,7 +18,7 @@ def __parse_arguments():
                         action='store',
                         type=int,
                         default=10)
-    parser.add_argument('-c', '--no-cache',
+    parser.add_argument('-i', '--ignore-cache',
                         help='avoid using previously cached information',
                         action='store_true',
                         default=False)

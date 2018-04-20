@@ -28,6 +28,10 @@ class _3d_matrix(object):
         """ Set the row content corresponding to the passed row index """
         self.__matrix[key] = value
 
+    def items(self):
+        """ Return a list of the matrix's {position, words} tuple pairs """
+        return iter(self.__matrix.items())
+
 class frequency(_3d_matrix):
     """ Frequency matrix for expressing frequency of pairwise word sequences
 

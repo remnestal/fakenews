@@ -32,6 +32,16 @@ class _3d_matrix(object):
         """ Return a list of the matrix's {position, words} tuple pairs """
         return iter(self.__matrix.items())
 
+    def _make_serializable(self):
+        """ Convert matrix to regular dictionaries that are serializable """
+        def to_dict(obj):
+            if isinstance(obj, defaultdict):
+                return {k: to_dict(v) for k, v in obj.items()}
+            else:
+                return obj
+        # overwrite existing matrix structure
+        self.__matrix = to_dict(self.__matrix)
+
 class frequency(_3d_matrix):
     """ Frequency matrix for expressing frequency of pairwise word sequences
 

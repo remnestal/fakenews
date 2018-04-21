@@ -6,7 +6,7 @@ import matrix3
 import textutils
 import pickle
 
-CACHE = '.cache.pkl'
+_CACHE = '.cache.pkl'
 
 class Markovchain(object):
     """ Markov-chain object for fabricating text """
@@ -14,7 +14,7 @@ class Markovchain(object):
     def __init__(self, refresh_cache=False):
         """ Create the first order markov-chain """
 
-        cache_enabled = not refresh_cache and isfile(CACHE)
+        cache_enabled = not refresh_cache and isfile(_CACHE)
         if cache_enabled:
             # utilize cached transition matrix
             self.transition = self.__read_cache()
@@ -59,12 +59,12 @@ class Markovchain(object):
         # perhaps a little flaky, but should always have returned by now
         raise RuntimeError('__next failed')
 
-    def __write_cache(self, cache_path=CACHE):
+    def __write_cache(self, cache_path=_CACHE):
         """ Write transition matrix to the cache """
         with open(cache_path, "wb") as cache:
             pickle.dump(self.transition, cache, pickle.HIGHEST_PROTOCOL)
 
-    def __read_cache(self, cache_path=CACHE):
+    def __read_cache(self, cache_path=_CACHE):
         """ Read transition matrix from the cache """
         with open(cache_path, "rb") as cache:
             loaded_cache = pickle.load(cache)

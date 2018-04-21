@@ -58,3 +58,28 @@ class frequency(_3d_matrix):
         # record that the sequence {word1, word2} occured at position
         for position, (word1, word2) in enumerate(pairwise):
             self[position][word1][word2] += 1
+
+class transition(_3d_matrix):
+    """ Transition probability matrix for pairwise comparison in sequence
+
+        Example:
+            A[x][y][z]: probability for word z to follow word y, when word y has
+                        position x in the sequence.
+    """
+
+    def __init__(self):
+        """ Initialize an empty transition matrix """
+        super(transition, self).__init__(float)
+
+    def convert(frequency_matrix):
+        """ Returns a transition matrix based on the passed frequency matrix """
+        matrix = transition()
+        for position, words in frequency_matrix.items():
+            # translate frequency to probability for each word pair
+            for word1, successors in words.items():
+                total_occurances = sum(successors.values())
+                for word2, occurances in successors.items():
+                    probability = float(occurances)/float(total_occurances)
+                    matrix[position][word1][word2] = probability
+
+        return matrix

@@ -67,19 +67,17 @@ class transition(_3d_matrix):
                         position x in the sequence.
     """
 
-    def __init__(self):
-        """ Initialize an empty transition matrix """
+    def __init__(self, frequency_matrix):
+        """ Initialize a transition matrix using the passed frequency matrix """
         super(transition, self).__init__(float)
+        self.__build_transition_matrix(frequency_matrix)
 
-    def convert(frequency_matrix):
-        """ Returns a transition matrix based on the passed frequency matrix """
-        matrix = transition()
+    def __build_transition_matrix(self, frequency_matrix):
+        """ Convert the passed frequency matrix into transitional probabilities """
         for position, words in frequency_matrix.items():
-            # translate frequency to probability for each word pair
             for word1, successors in words.items():
+                # translate frequency to probability for each word pair
                 total_occurances = sum(successors.values())
                 for word2, occurances in successors.items():
                     probability = float(occurances)/float(total_occurances)
-                    matrix[position][word1][word2] = probability
-
-        return matrix
+                    self[position][word1][word2] = probability

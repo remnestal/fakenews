@@ -30,7 +30,7 @@ class Markovchain(object):
         for f in self._data_files():
             with open(f) as fstream:
                 for line in fstream:
-                    seq = line.strip().split()
+                    seq = line.replace('"', '').replace('”', '').strip().split()
                     frequency.add_sequence(seq)
 
         # set up the transition matrix

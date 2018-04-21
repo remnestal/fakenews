@@ -80,7 +80,10 @@ class transition(_3d_matrix):
     def __init__(self, frequency_matrix):
         """ Initialize a transition matrix using the passed frequency matrix """
         super(transition, self).__init__(float)
+
+        # build matrix and make it serializable
         self.__build_transition_matrix(frequency_matrix)
+        self._make_serializable()
 
     def __build_transition_matrix(self, frequency_matrix):
         """ Convert the passed frequency matrix into transitional probabilities """

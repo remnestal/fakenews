@@ -67,7 +67,12 @@ class Markovchain(object):
     def __read_cache(self, cache_path=CACHE):
         """ Read transition matrix from the cache """
         with open(cache_path, "rb") as cache:
-            return pickle.load(cache)
+            loaded_cache = pickle.load(cache)
+            # return only if the loaded cache actually contains a transition matrix
+            if isinstance(loaded_cache, matrix3.transition):
+                return loaded_cache
+            else:
+                raise TypeError('Cache was corrupted.')
 
     def _data_files(self, datapath='data/', exclude=['.gitignore']):
         """ Return paths of eligible files in the data subdirectory """

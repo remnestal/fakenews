@@ -17,6 +17,7 @@ class _3d_matrix(object):
         if isinstance(matrix_type, type):
             # This is necessary evil to achieve lazy evaluation
             self.__matrix = defaultdict(lambda: defaultdict(lambda: defaultdict(matrix_type)))
+            self._initial_states = defaultdict(matrix_type)
         else:
              raise ValueError('`matrix_type` must be an instance of class `type`')
 
@@ -41,6 +42,7 @@ class _3d_matrix(object):
                 return obj
         # overwrite existing matrix structure
         self.__matrix = to_dict(self.__matrix)
+        self._initial_states = to_dict(self._initial_states)
 
 class frequency(_3d_matrix):
     """ Frequency matrix for expressing frequency of pairwise word sequences
@@ -65,6 +67,9 @@ class frequency(_3d_matrix):
         sequence.append(delimiter.EOL)
         pairwise = zip(sequence[:-1], sequence[1:])
 
+        # store the first word as a possible iniital state
+        self._initial_states[sequence[0]] += 1
+
         # record that the sequence {word1, word2} occured at position
         for position, (word1, word2) in enumerate(pairwise):
             self[position][word1][word2] += 1
@@ -87,6 +92,12 @@ class transition(_3d_matrix):
 
     def __build_transition_matrix(self, frequency_matrix):
         """ Convert the passed frequency matrix into transitional probabilities """
+        # convert the initial states
+        init_frequencies = sum(self._initial_states.values())
+        self._initial_states = {state : float(freq)/float(init_frequencies)
+                                for state, freq in self._initial_states}
+
+        # convert the matrix
         for position, words in frequency_matrix.items():
             for word1, successors in words.items():
                 # translate frequency to probability for each word pair

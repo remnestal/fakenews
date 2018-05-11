@@ -87,18 +87,30 @@ class transition(_3d_matrix):
         super(transition, self).__init__(float)
 
         # build matrix and make it serializable
+        self.__set_initial_distrib(frequency_matrix)
         self.__build_transition_matrix(frequency_matrix)
         self._make_serializable()
 
-    def __build_transition_matrix(self, frequency_matrix):
-        """ Convert the passed frequency matrix into transitional probabilities """
-        # convert the initial states
-        init_frequencies = sum(self._initial_state_distrib.values())
-        self._initial_state_distrib = {state : float(freq)/float(init_frequencies)
-                                for state, freq in self._initial_state_distrib}
+    def __set_initial_distrib(self, frequencies):
+        """ Sets initial state transition distribution
 
-        # convert the matrix
-        for position, words in frequency_matrix.items():
+            Converts the initial state distribution of the passed frequency
+            matrix to an initial state transition probability distribution.
+        """
+        num_observations = sum(frequencies._initial_state_distrib.values())
+        self._initial_state_distrib = dict()
+
+        for state, freq in frequencies._initial_state_distrib.items():
+            probability = float(freq)/float(num_observations)
+            self._initial_state_distrib[state] = probability
+
+    def __build_transition_matrix(self, frequencies):
+        """ Generate the state transition probability matrix
+
+            Convert the valeus stored in the passed frequency matrix into state
+            transition probabilities for each word and position pair.
+        """
+        for position, words in frequencies.items():
             for word1, successors in words.items():
                 # translate frequency to probability for each word pair
                 total_occurances = sum(successors.values())

@@ -1,5 +1,4 @@
 from collections import defaultdict, Iterable
-from textutils import delimiter
 
 class _3d_matrix(object):
     """ Basic implementation for a 3-dimensional lazily evaluated matrix
@@ -62,8 +61,8 @@ class frequency(_3d_matrix):
         if not isinstance(sequence, Iterable):
             raise ValueError('The passed sequence must be iterable.')
 
-        # add start/end- of text delimiters and group all tokens pairwise
-        sequence.append(delimiter.EOL)
+        # add None as an EOL-delimiter
+        sequence.append(None)
         pairwise = zip(sequence[:-1], sequence[1:])
 
         # store the first word as a possible iniital state

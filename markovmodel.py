@@ -3,7 +3,6 @@ from os.path import isfile, join
 from os import listdir
 import random
 import matrix3
-import textutils
 import pickle
 
 _CACHE = '.cache.pkl'
@@ -41,7 +40,8 @@ class Markovchain(object):
         body = list()
         body.append(self.__first_word())
 
-        while body[-1] != textutils.delimiter.EOL:
+        # look for new words until the EOL delimiter None is found
+        while body[-1] != None:
             body.append(self.__next(len(body)-1, body[-1]))
 
         # return all but root and eol delimiters

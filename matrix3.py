@@ -63,7 +63,6 @@ class frequency(_3d_matrix):
             raise ValueError('The passed sequence must be iterable.')
 
         # add start/end- of text delimiters and group all tokens pairwise
-        sequence.insert(0, delimiter.ROOT)
         sequence.append(delimiter.EOL)
         pairwise = zip(sequence[:-1], sequence[1:])
 

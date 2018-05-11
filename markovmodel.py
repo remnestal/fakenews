@@ -38,12 +38,27 @@ class Markovchain(object):
 
     def generate(self):
         """ Return a fabricated string made with a 1st order markov chain """
-        body = [textutils.delimiter.ROOT]
+        body = list()
+        body.append(self.__first_word())
+
         while body[-1] != textutils.delimiter.EOL:
             body.append(self.__next(len(body)-1, body[-1]))
 
         # return all but root and eol delimiters
-        return ' '.join(body[1:-1])
+        return ' '.join(body[:-1])
+
+    def __first_word(self):
+        """ Pick the first word based on the initial state distribution """
+        initial_probability = random.random()
+        accumulated_prob = 0.0
+
+        for state, prob in self.transition._initial_state_distrib.items():
+            accumulated_prob += prob
+            if accumulated_prob >= initial_probability:
+                return state
+
+        # perhaps a little flaky, but should always have returned by now
+        raise RuntimeError('__first_word failed')
 
     def __next(self, position, word):
         """ Pick a random successor based on the probability of transition """

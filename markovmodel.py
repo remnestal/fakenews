@@ -10,8 +10,10 @@ _CACHE = '.cache.pkl'
 class Markovchain(object):
     """ Markov-chain object for fabricating text """
 
-    def __init__(self, refresh_cache=False):
+    def __init__(self, refresh_cache=False, order=2):
         """ Create the first order markov-chain """
+        self.order = order
+        assert self.order >= 2, 'order 2 or higher is required'
 
         cache_enabled = not refresh_cache and isfile(_CACHE)
         if cache_enabled:
@@ -25,7 +27,7 @@ class Markovchain(object):
     def __initalize_model(self):
         """ Create a probibalistic transition model from available data """
         # set up the frequency matrix
-        frequency = matrix3.frequency()
+        frequency = matrix3.frequency(self.order)
         for f in self._data_files():
             with open(f) as fstream:
                 for line in fstream:
@@ -37,12 +39,15 @@ class Markovchain(object):
 
     def generate(self):
         """ Return a fabricated string made with a 1st order markov chain """
-        body = list()
-        body.append(self.__first_word())
+        body = list(tuple(self.__first_word()))
 
         # look for new words until the EOL delimiter None is found
         while body[-1] != None:
-            body.append(self.__next(len(body)-1, body[-1]))
+            past_states = tuple(body[-self.order+1:])
+            print(past_states)
+            print(len(body)-(len(past_states)))
+            next_state = self.__next(len(body)-(len(past_states)), past_states)
+            body.append(next_state)
 
         # return all but root and eol delimiters
         return ' '.join(body[:-1])
@@ -64,7 +69,6 @@ class Markovchain(object):
         """ Pick a random successor based on the probability of transition """
         transition_probability = random.random()
         total_probability = 0.0
-
         # loop until the probability exceeds the likelihood of transition
         for successor, probability in self.transition[position][word].items():
             total_probability += probability

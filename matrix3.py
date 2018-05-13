@@ -51,9 +51,15 @@ class frequency(_3d_matrix):
         A[x][y][z]  how many times the sequence {x, z} has occured at {x, x+1}
     """
 
-    def __init__(self):
-        """ Initialize an empty frequency matrix """
+    def __init__(self, order):
+        """ Initialize an empty frequency matrix
+
+            The `order` parameter determines the order of the markov chain; n=2
+            means that words are associated in pairs of 2, n=3 means that words
+            are grouped in sets of 3 etc.
+        """
         super(frequency, self).__init__(int)
+        self.order = order
 
     def add_sequence(self, sequence):
         """ Register the passed sequence of words in the matrix """
@@ -63,14 +69,23 @@ class frequency(_3d_matrix):
 
         # add None as an EOL-delimiter
         sequence.append(None)
-        pairwise = zip(sequence[:-1], sequence[1:])
 
-        # store the first word as a possible iniital state
-        self._initial_state_distrib[sequence[0]] += 1
+        # register the initial state
+        initial_state = tuple(sequence[:self.order-1])
+        self._initial_state_distrib[initial_state] += 1
 
-        # record that the sequence {word1, word2} occured at position
-        for position, (word1, word2) in enumerate(pairwise):
-            self[position][word1][word2] += 1
+        # register the occurance of each state and transition
+        for position, ngram in enumerate(self.__ngram(sequence)):
+            state, transit = ngram[:-1], ngram[-1]
+            self[position][state][transit] += 1
+
+    def __ngram(self, sequence):
+        """ Return a list of ngrams from the passed sequence """
+        # copy the sequence n-times with incrementing offset for each copy
+        sequence_offset = [sequence[index:] for index in range(self.order)]
+        # zip the n sequences together to form the ngrams
+        ngram_seq = zip(*sequence_offset)
+        return list(ngram_seq)
 
 class transition(_3d_matrix):
     """ Transition probability matrix for pairwise comparison in sequence

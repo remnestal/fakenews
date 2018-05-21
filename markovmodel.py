@@ -7,7 +7,7 @@ import pickle
 
 _CACHE = '.cache.pkl'
 
-class Markovchain(object):
+class markovchain(object):
     """ Markov-chain object for fabricating text """
 
     def __init__(self, refresh_cache=False, order=2):
@@ -44,8 +44,6 @@ class Markovchain(object):
         # look for new words until the EOL delimiter None is found
         while body[-1] != None:
             past_states = tuple(body[-self.order+1:])
-            print(past_states)
-            print(len(body)-(len(past_states)))
             next_state = self.__next(len(body)-(len(past_states)), past_states)
             body.append(next_state)
 

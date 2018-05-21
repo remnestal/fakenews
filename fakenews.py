@@ -5,7 +5,7 @@ import argparse
 def main():
     """ Generate fake headlines """
     args = __parse_arguments()
-    chain = markovmodel.Markovchain(refresh_cache=args.refresh_cache, order=args.order)
+    chain = markovmodel.markovchain(refresh_cache=args.refresh_cache, order=args.order)
 
     for _ in range(args.samples):
         print(chain.generate())

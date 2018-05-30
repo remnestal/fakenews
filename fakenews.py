@@ -1,14 +1,16 @@
 import markovmodel
-import sys
 import argparse
+
 
 def main():
     """ Generate fake headlines """
     args = __parse_arguments()
-    chain = markovmodel.markovchain(refresh_cache=args.refresh_cache, order=args.order)
+    chain = markovmodel.MarkovChain(refresh_cache=args.refresh_cache,
+                                    order=args.order)
 
     for _ in range(args.samples):
         print(chain.generate())
+
 
 def __parse_arguments():
     """ Parse and return input arguments """
@@ -29,6 +31,7 @@ def __parse_arguments():
                         default=False)
     return parser.parse_args()
 
+
 def order_type(x):
     """ Type for asserting lower bounds of the `order`-argument """
     x = int(x)
@@ -36,6 +39,7 @@ def order_type(x):
         raise argparse.ArgumentTypeError("Minimum order value is 2")
     else:
         return x
+
 
 if __name__ == "__main__":
     main()

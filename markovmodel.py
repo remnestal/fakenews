@@ -1,4 +1,3 @@
-from collections import defaultdict
 from os.path import isfile, join
 from os import listdir
 import random
@@ -7,7 +6,8 @@ import pickle
 
 _CACHE = '.cache.pkl'
 
-class markovchain(object):
+
+class MarkovChain(object):
     """ Markov-chain object for fabricating text """
 
     def __init__(self, refresh_cache=False, order=2):
@@ -21,28 +21,32 @@ class markovchain(object):
             self.transition = self.__read_cache()
         else:
             # generate the transition matrix anew
-            self.__initalize_model();
+            self.__initalize_model()
             self.__write_cache()
 
     def __initalize_model(self):
         """ Create a probibalistic transition model from available data """
         # set up the frequency matrix
-        frequency = matrix3.frequency(self.order)
+        frequency = matrix3.Frequency(self.order)
         for f in self._data_files():
             with open(f) as fstream:
                 for line in fstream:
-                    seq = line.replace('"', '').replace('”', '').strip().split()
+                    # naïve input filtering
+                    seq = line.replace('"', '') \
+                              .replace('”', '') \
+                              .strip() \
+                              .split()
                     frequency.add_sequence(seq)
 
         # set up the transition matrix
-        self.transition = matrix3.transition(frequency_matrix=frequency)
+        self.transition = matrix3.Transition(frequency_matrix=frequency)
 
     def generate(self):
         """ Return a fabricated string made with a 1st order markov chain """
         body = list(tuple(self.__first_word()))
 
         # look for new words until the EOL delimiter None is found
-        while body[-1] != None:
+        while body[-1] is not None:
             past_states = tuple(body[-self.order+1:])
             next_state = self.__next(len(body)-(len(past_states)), past_states)
             body.append(next_state)
@@ -85,7 +89,7 @@ class markovchain(object):
         """ Read transition matrix from the cache """
         with open(cache_path, "rb") as cache:
             loaded_cache = pickle.load(cache)
-            # return only if the loaded cache actually contains a transition matrix
+            # return if the cache actually contains a transition matrix
             if isinstance(loaded_cache, matrix3.transition):
                 return loaded_cache
             else:

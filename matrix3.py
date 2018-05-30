@@ -1,13 +1,14 @@
 from collections import defaultdict, Iterable
 
+
 class _3d_matrix(object):
     """ Basic implementation for a 3-dimensional lazily evaluated matrix
 
         The matrix has no fixed size and is dynamically allocated using
-        collections.defaultdict to achieve JIT construction of missing elements.
-        This means that, for example, element A[1][2][3] can be assigned a value
-        even if neither element A[1][2] or element A[1] has been defined before,
-        since both will be instantiated on the fly.
+        collections.defaultdict to achieve JIT construction of missing
+        elements. This means that, for example, element A[1][2][3] can be
+        assigned a value even if neither element A[1][2] or element A[1] has
+        been defined before, since both will be instantiated on the fly.
     """
 
     def __init__(self, matrix_type):
@@ -15,10 +16,12 @@ class _3d_matrix(object):
         # assert that the passed type is actually derived from the type-class
         if isinstance(matrix_type, type):
             # This is necessary evil to achieve lazy evaluation
-            self.__matrix = defaultdict(lambda: defaultdict(lambda: defaultdict(matrix_type)))
+            self.__matrix = defaultdict(
+                lambda: defaultdict(
+                    lambda: defaultdict(matrix_type)))
             self._initial_state_distrib = defaultdict(matrix_type)
         else:
-             raise ValueError('`matrix_type` must be an instance of class `type`')
+            raise ValueError('`matrix_type` must be an instance of `type`')
 
     def __getitem__(self, key):
         """ Return the row that corresponds to the passed index """
@@ -43,7 +46,8 @@ class _3d_matrix(object):
         self.__matrix = to_dict(self.__matrix)
         self._initial_state_distrib = to_dict(self._initial_state_distrib)
 
-class frequency(_3d_matrix):
+
+class Frequency(_3d_matrix):
     """ Frequency matrix for expressing frequency of pairwise word sequences
 
         A[x]        all words at position x in the sequence
@@ -58,7 +62,7 @@ class frequency(_3d_matrix):
             means that words are associated in pairs of 2, n=3 means that words
             are grouped in sets of 3 etc.
         """
-        super(frequency, self).__init__(int)
+        super(Frequency, self).__init__(int)
         self.order = order
 
     def add_sequence(self, sequence):
@@ -87,17 +91,18 @@ class frequency(_3d_matrix):
         ngram_seq = zip(*sequence_offset)
         return list(ngram_seq)
 
-class transition(_3d_matrix):
+
+class Transition(_3d_matrix):
     """ Transition probability matrix for pairwise comparison in sequence
 
         Example:
-            A[x][y][z]: probability for word z to follow word y, when word y has
-                        position x in the sequence.
+            A[x][y][z]: probability for word z to follow word y, when word y
+                        has position x in the sequence.
     """
 
     def __init__(self, frequency_matrix):
-        """ Initialize a transition matrix using the passed frequency matrix """
-        super(transition, self).__init__(float)
+        """ Initialize a transition matrix from the passed frequency matrix """
+        super(Transition, self).__init__(float)
 
         # build matrix and make it serializable
         self.__set_initial_distrib(frequency_matrix)
